@@ -6,7 +6,7 @@ int main (int argc,char ** argv){
 	int N=10;		//number of particles 	
 
 	// set solver parameters
-	double dt=1;		// time step
+	double dt=0.1;		// time step
 	double T =1;		// time interval for the simulation
 
 	Particle * particles = new Particle[N];

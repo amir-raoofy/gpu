@@ -5,6 +5,37 @@ void ElectricField(double* E, const Particle& P){
 	E[1]=1.0;
 }
 
+void Interaction_field  (double* E, Particle* particles, int index, int N){
+	
+	// calculate the interaction between the particle ( index - n )
+	double x= particles[index].get_position()[0];		//position of particles[index]
+	double y= particles[index].get_position()[1];
+	double x_i;						//temp position
+	double y_i;
+	double r_i;						//temp distance
+
+	for (int n=index+1; n<N; n++){
+
+		x_i = particles[n].get_position()[0];
+		y_i = particles[n].get_position()[1];
+		r_i = pow(((x-x_i)*(x-x_i) + (y-y_i)*(y-y_i)), 1.5);
+
+		E[0]+= particles[n].get_charge()*(x-x_i)/r_i;
+		E[1]+= particles[n].get_charge()*(y-y_i)/r_i;
+	}
+
+	for (int n=0; n<index-1; n++){
+
+		x_i = particles[n].get_position()[0];
+		y_i = particles[n].get_position()[1];
+		r_i = pow(((x-x_i)*(x-x_i) + (y-y_i)*(y-y_i)), 1.5);
+
+		E[0]+= particles[n].get_charge()*(x-x_i)/r_i;
+		E[1]+= particles[n].get_charge()*(y-y_i)/r_i;
+	}
+}
+
+
 Particle::Particle(){
 	
 	this ->m    = 1  ;
@@ -58,6 +89,7 @@ void solve (double dt, double T, int N, Particle *particles){
 
 	int Nt=T/dt;
 	for (int i=0; i<Nt; i++){
+
 		for (int n=0; n<N; n++){
 			// update the electric field
 			particles[n].set_field();

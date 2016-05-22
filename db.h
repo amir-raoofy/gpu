@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 
 class Particle {
 	
@@ -22,9 +23,9 @@ class Particle {
 		void set_field();
 
 		void solve_time_step(double dt);
-
 };
 
 void ElectricField(double* E, const Particle& P);
 void solve (double dt, double T, int N, Particle *particles);
+void Interaction_field  (double* E, Particle* particles, int index, int N);
 

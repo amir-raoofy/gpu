@@ -1,14 +1,18 @@
 #include "db.cuh"
 int main( int argc,char ** argv){
-	
+
+	// argument handling
+	if (argc<5){
+		fprintf(stderr, "usage: ./sim_cuda <maximum_number_of_threads> <number_of_particles> <simulation_time> <time_step>\n");
+		exit(1);
+	}
+		
 	// set the simulation parameters
-	const int max_thread = 1024;
-	const int N = 1000000;	//number of particles
+	const int max_thread = atoi(argv[1]);
+	const int N = atoi(argv[2]);	//number of particles
 	int blocks = int(N/max_thread)+1;
-	int T = 100;		// duration of the simulation
-	float dt = 0.01;		//time steps
-	
-	
+	int T =atoi(argv[3]) ;		// duration of the simulation
+	float dt =atoi(argv[4]);		//time steps
 	
 	//declare input and output array on the Host
 	Particle h_particles[N];

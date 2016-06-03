@@ -31,13 +31,26 @@ class Particle{
 		__host__ __device__ void update_field(int N, int index, Particle * particles);
 		
 		//solve the differential equation for dt time step for "this" particle
-		__device__ __host__ void solve_time_step(double dt);
-		
+		__device__ __host__ void solve_time_step(double dt);	
+};
 
-		
-		
+class Simulation{
+	private:
+		double _dt;
+		double _T;
+		int _N;
+		int _max_threads;
+		int _blocks;
+		int _output_flag;
+		Particle* _particles_host_in;
+		Particle* _particles_host_out;
+	public:
+
+		Simulation(double dt, double T, int N, int max_threads, int blocks, int output_flag, Particle* particles_host_in, Particle * particles_host_out);
+		void solve();
 
 };
+
 //this is the kernel of the simulation on the Device
 __global__ void update_position(double dt, double T, const int N,\
  Particle * d_particles, Particle * d_output, const int max_thread);

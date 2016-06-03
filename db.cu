@@ -93,6 +93,38 @@ __device__ __host__ void Particle::set_interaction(int N, int index, Particle * 
 	}
 }
 
+Simulation::Simulation(double dt, double T, int N, int max_threads, int blocks, int output_flag, Particle* particles_host_in, Particle * particles_host_out):
+	_dt(dt), _T(T), _N(N), _max_threads(max_threads), _blocks(blocks), _output_flag(output_flag),
+	_particles_host_in(particles_host_in), _particles_host_out(particles_host_out)
+	{}
+		
+void Simulation::solve(){
+	
+	//initialize the positions and the veolicities of the partilces for simulation	
+	//initial_condition(_particles_host_in, _N);
+	
+	//declare arrays which will be transfered to the Device
+	Particle * particles_device_in;
+	Particle * particles_device_out;
+
+	//allocate memory space on the Device
+	cudaMalloc((void **) &particles_device_in,  _N * sizeof(Particle));
+	cudaMalloc((void **) &particles_device_out, _N * sizeof(Particle));		
+	
+	//Transfer arrays to the Device
+	cudaMemcpy(particles_device_in, _particles_host_in, _N * sizeof(Particle), cudaMemcpyHostToDevice);
+
+	// run the kernel with N threads and 1 Blocks
+	update_position<<<_blocks,_N>>>(_dt, _T, _N, particles_device_in, particles_device_out, _max_threads);
+
+	//write the solution back to the Host
+	cudaMemcpy(_particles_host_out, particles_device_out, _N * sizeof(Particle), cudaMemcpyDeviceToHost);
+
+	cudaFree(particles_device_in );
+	cudaFree(particles_device_out);
+
+}
+
 __global__ void update_position(double dt, double T, const int N,\
  Particle * particles, Particle * d_output,const int max_thread){
 	

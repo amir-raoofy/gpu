@@ -19,12 +19,15 @@ __host__ Particle::Particle(){
 __device__ __host__ double Particle::get_mass(){
 	return this ->m;
 };
+
 __device__ __host__ double Particle::get_charge(){
 	return this ->q;
 };
+
 __device__ __host__ double * Particle::get_position(){
 	return this ->x;
 };
+
 __device__ __host__ double * Particle::get_velocity(){
 	return this ->v;
 };
@@ -37,6 +40,7 @@ __device__ __host__ void Particle::set_position(double* position){
 	this->x[0]=position[0];
 	this->x[1]=position[1];
 };
+
 __device__ __host__ void Particle::set_velocity(double* velocity){
 	this->v[0]=velocity[0];
 	this->v[1]=velocity[1];
@@ -47,7 +51,6 @@ __device__ __host__ void Particle::update_field(int N, int index, Particle * par
 	this->set_field();
 
 };
-
 
 __device__ __host__ void Particle::solve_time_step(double dt){
 
@@ -61,7 +64,6 @@ __device__ __host__ void Particle::solve_time_step(double dt){
 __device__ __host__ void Particle::set_field(){
 	electricField(this->E);
 };
-
 
 __device__ __host__ void Particle::set_interaction(int N, int index, Particle * particles){
 	
@@ -90,7 +92,6 @@ __device__ __host__ void Particle::set_interaction(int N, int index, Particle * 
 		this->I[1] += 0;
 	}
 }
-		
 
 __global__ void update_position(double dt, double T, const int N,\
  Particle * particles, Particle * d_output,const int max_thread){
@@ -100,16 +101,9 @@ __global__ void update_position(double dt, double T, const int N,\
 	int b_index = blockIdx.x;
 	int index = (b_index*max_thread)+t_index;
 	
-	
-	//write particles into the shared memory
-	//__shared__ Particle  sh_particles[100];
-	//sh_particles[index] = particles[index]; // copying entire position into the shared memory
-	
-	//synchronize the thread
-	__syncthreads();
-	
 	// find the position of the index-th particle at time T
 	for( int i = 0; i < int(T/dt)+1; i++){		
+		__syncthreads();
 		particles[index].update_field(N, index , particles);
 		particles[index].solve_time_step(dt);
 	}
@@ -117,7 +111,6 @@ __global__ void update_position(double dt, double T, const int N,\
 	//write back the updated particles into the output
 	d_output[index] = particles[index];
 };
-
 
 __host__ __device__ void electricField(double* E){
 	E[0]=0.0;
@@ -132,6 +125,3 @@ __host__ void initial_condition(Particle * particles,int N){
 		particles[i].set_position(pos);
 	}
 }
-	
-	
-	

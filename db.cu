@@ -101,7 +101,7 @@ Simulation::Simulation(double dt, double T, int N, int max_threads, int blocks, 
 void Simulation::solve(){
 	
 	//initialize the positions and the veolicities of the partilces for simulation	
-	//initial_condition(_particles_host_in, _N);
+	initial_condition(_particles_host_in, _N);
 	
 	//declare arrays which will be transfered to the Device
 	Particle * particles_device_in;
@@ -115,8 +115,9 @@ void Simulation::solve(){
 	cudaMemcpy(particles_device_in, _particles_host_in, _N * sizeof(Particle), cudaMemcpyHostToDevice);
 
 	// run the kernel with N threads and 1 Blocks
-	update_position<<<_blocks,_N>>>(_dt, _T, _N, particles_device_in, particles_device_out, _max_threads);
-
+	for( int i = 0; i < int(_T/_dt)+1; i++){		
+	    update_position<<<_blocks,_N>>>(_dt, _T, _N, particles_device_in, particles_device_out, _max_threads);
+	}
 	//write the solution back to the Host
 	cudaMemcpy(_particles_host_out, particles_device_out, _N * sizeof(Particle), cudaMemcpyDeviceToHost);
 
@@ -134,11 +135,8 @@ __global__ void update_position(double dt, double T, const int N,\
 	int index = (b_index*max_thread)+t_index;
 	
 	// find the position of the index-th particle at time T
-	for( int i = 0; i < int(T/dt)+1; i++){		
-		__syncthreads();
-		particles[index].update_field(N, index , particles);
-		particles[index].solve_time_step(dt);
-	}
+	particles[index].update_field(N, index , particles);
+	particles[index].solve_time_step(dt);
 	
 	//write back the updated particles into the output
 	d_output[index] = particles[index];
@@ -152,8 +150,8 @@ __host__ __device__ void electricField(double* E){
 __host__ void initial_condition(Particle * particles,int N){
 	double pos[2];
 	for( int i = 0; i < N; i++){
-		pos[0]=(double)rand() / 10;
-		pos[1]=(double)rand() / 10;
+		pos[0]=(double)(rand() % 1000)/10;
+		pos[1]=(double)(rand() % 1000)/10;
 		particles[i].set_position(pos);
 	}
 }

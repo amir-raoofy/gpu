@@ -2,11 +2,11 @@
 int main( int argc,char ** argv){
 
 	// argument handling
-	if (argc<6){
+/*	if (argc<6){
 		fprintf(stderr, "usage: ./sim_cuda <maximum_number_of_threads> <number_of_particles> <simulation_time> <time_step>\n");
 		exit(1);
 	}
-		
+*/		
 	// set the simulation parameters
 	const int max_threads = atoi(argv[1]);		//maximum number of threads per blocks
 	const int N           = atoi(argv[2]);		//number of particles
@@ -24,12 +24,12 @@ int main( int argc,char ** argv){
 	Simulation* simulation= new Simulation(dt, T, N, max_threads, blocks, output_flag, particles_host_in, particles_host_out);
 	simulation -> solve();
 	
-/*	for(int i = 0 ; i < N ; i ++){
+	for(int i = 0 ; i < N ; i ++){
 		std::cout<<particles_host_in[i].get_position()[0]<<","<<particles_host_in[i].get_position()[1]\
 		<<std::endl;
 	}
-*/	
-	delete [] particles_host_in ;
+	
+delete [] particles_host_in ;
 	delete [] particles_host_out;
 	return 0;
 }

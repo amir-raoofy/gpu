@@ -12,10 +12,10 @@ class Particle{
 		double I[2]; 	//array of interaction
 		
 		__device__ __host__ void set_field();
-		__device__ __host__ void set_interaction(int N, int index, Particle * particles);
+
 	
 	public:
-	
+		__device__ __host__ void set_interaction(int N, int index, Particle * particles);
 		__device__ __host__ Particle();
 		__device__ __host__ double get_mass();
 		__device__ __host__ double get_charge();
@@ -41,5 +41,5 @@ class Particle{
 //this is the kernel of the simulation on the Device
 __global__ void update_position(double dt, double T, const int N,\
  Particle * d_particles, Particle * d_output, const int max_thread,int blocks);
-__host__ __device__ void electricField(double* E);
+__host__ __device__ void electricField(double* E, double* x);
 __host__ void initial_condition(Particle * particles,int N);

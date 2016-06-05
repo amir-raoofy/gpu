@@ -3,7 +3,7 @@ int main( int argc,char ** argv){
 	
 	// set the simulation parameters
 	const int max_thread = 1024;
-	const int N = 2049;	//number of particles
+	const int N = 100;	//number of particles
 	int blocks;
 	if(N % max_thread == 0){
 		blocks = int(N/max_thread);
@@ -12,15 +12,25 @@ int main( int argc,char ** argv){
 		blocks = int(N/max_thread)+1;
 	}
 	
-	int T = 0;		// duration of the simulation
-	float dt = 0.1;		//time steps
+	int T = 10;		// duration of the simulation
+	float dt = 0.001;		//time steps
 	
 	
 	
 	//declare input and output array on the Host
 	Particle h_particles[N];
 	initial_condition(h_particles, N);
-	Particle h_output[N];	
+	/*double dummy[2];
+	dummy[0] = 3;
+	dummy[1] = 3;
+	h_particles[0].set_position(dummy);
+	dummy[1] = 5;
+	dummy[0] = 5;
+//	h_particles[0].set_interaction(2,0,h_particles);
+	h_particles[1].set_position(dummy);*/
+	Particle h_output[N];
+
+	//std::cout<< h_particles[0].get_interaction()[1]<<std::endl;	
 	
 	//calculate the size of the arrays to be allocated
 	int particles_array_bytes = N * sizeof(Particle);
@@ -38,8 +48,9 @@ int main( int argc,char ** argv){
 	cudaMemcpy(d_particles,h_particles,particles_array_bytes,cudaMemcpyHostToDevice);
 	
 	// run the kernel with N threads and 1 Blocks
-	for( int i = 0; i < int(T/dt)+1; i++){
+	for( int i = 0; i < int(T/dt); i++){
 	update_position<<<blocks,((N<max_thread)?N:max_thread)>>>(dt,T,N,d_particles,d_output,max_thread,blocks);
+	cudaDeviceSynchronize();
 	}
 	
 	//write the solution back to the Host

@@ -116,7 +116,7 @@ void Simulation::solve(){
 
 	// run the kernel with N threads and 1 Blocks
 	for( int i = 0; i < int(_T/_dt)+1; i++){		
-	    update_position<<<_blocks,_N>>>(_dt, _T, _N, particles_device_in, particles_device_out, _max_threads);
+	    update_position<<<_blocks,((_N<_max_threads)?_N:_max_threads)>>>(_dt, _T, _N, particles_device_in, particles_device_out, _max_threads);
 	}
 	//write the solution back to the Host
 	cudaMemcpy(_particles_host_out, particles_device_out, _N * sizeof(Particle), cudaMemcpyDeviceToHost);
@@ -150,8 +150,8 @@ __host__ __device__ void electricField(double* E){
 __host__ void initial_condition(Particle * particles,int N){
 	double pos[2];
 	for( int i = 0; i < N; i++){
-		pos[0]=(double)(rand() % 1000)/10;
-		pos[1]=(double)(rand() % 1000)/10;
+		pos[0]=(double)(rand() % 1000)/100;
+		pos[1]=(double)(rand() % 1000)/100;
 		particles[i].set_position(pos);
 	}
 }

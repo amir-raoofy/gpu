@@ -133,6 +133,8 @@ __global__ void update_position(double dt, double T, const int N,\
 	int t_index = threadIdx.x;
 	int b_index = blockIdx.x;
 	int index = (b_index*max_thread)+t_index;
+	if (index >= N)
+	    return
 	
 	// find the position of the index-th particle at time T
 	particles[index].update_field(N, index , particles);

@@ -117,6 +117,7 @@ void Simulation::solve(){
 	// run the kernel with N threads and 1 Blocks
 	for( int i = 0; i < int(_T/_dt)+1; i++){		
 	    update_position<<<_blocks,((_N<_max_threads)?_N:_max_threads)>>>(_dt, _T, _N, particles_device_in, particles_device_out, _max_threads);
+	    cudaDeviceSynchronize(); 
 	}
 	//write the solution back to the Host
 	cudaMemcpy(_particles_host_out, particles_device_out, _N * sizeof(Particle), cudaMemcpyDeviceToHost);

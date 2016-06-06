@@ -39,18 +39,24 @@ int main( int argc,char ** argv){
 		
 	// run the kernel with N threads and 1 Blocks
 	std::ofstream myfile;
-	myfile.open("data.txt");
+	myfile.open("data");
+	myfile << "{";
+	int count = 0;
 	for(int i = 0; i < int(T/dt); i++){
+		
 		update_position<<<1,N>>>(dt,T,N,d_particles,d_output_x,d_output_y,max_thread);
 		if(i%10 == 1){
 			cudaMemcpy(h_output_x,d_output_x,output_array_bytes,cudaMemcpyDeviceToHost);
 			cudaMemcpy(h_output_y,d_output_y,output_array_bytes,cudaMemcpyDeviceToHost);
-			for(int j = 0; j < N; j++){
-				myfile << h_output_x[j]<<","<<h_output_y[j]<<'\t';
+			for(int j = 0; j < N-1; j++){
+				myfile <<"{"<< h_output_x[j]<<","<<h_output_y[j]<<","<<count<<"},";
+				count++;
 			}
-			myfile << std::endl;
+			myfile <<"{"<< h_output_x[N-1]<<","<<h_output_y[N-1]<<","<<count<<"}";
+	
 		}
 	}
+	myfile << "}";
 	myfile.close();
 
 	

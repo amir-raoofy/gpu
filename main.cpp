@@ -10,10 +10,18 @@ int main (int argc,char ** argv){
 	double T =1;		// time interval for the simulation
 
 	Particle * particles = new Particle[N];
-
-	solve(dt, T, N, particles);
-
-
+	initial_condition(particles, N);
+	
+	for( int i = 0; i < int(T/dt); i++){
+		update_position(dt,T,N,particles);
+	}
+	
+	
+	for(int i = 0 ; i < N ; i ++){
+		std::cout<<particles[i].get_position()[0]<<","<<particles[i].get_position()[1]\
+		<<std::endl;
+	}
+	
 	delete [] particles;
 
 	return 0;

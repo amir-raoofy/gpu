@@ -35,6 +35,20 @@ float* Particle::get_velocity(){
 float* Particle::get_field(){
 	return this ->E;
 };
+
+
+void Particle::set_parameters(Parameters* parameters){
+	this -> _parameters = parameters;
+}
+
+void Particle::set_mass(float mass){
+	this -> m = mass;
+};
+
+void Particle::set_charge(float charge){
+	this -> q = charge;
+};
+
 void Particle::set_position(float* position){
 	this->x[0]=position[0];
 	this->x[1]=position[1];
@@ -44,7 +58,7 @@ void Particle::set_velocity(float* velocity){
 	this->v[1]=velocity[1];
 };
 void Particle::set_field(){
-	electricField(this->E,this->x);
+	electricField(this->E,this->x, this->_parameters);
 };
 
 void Particle::update_field(int N, int index, Particle * particles){
@@ -105,16 +119,21 @@ void update_position(float dt, float T, const int N,\
 };
 
 
-void electricField(float* E, float* x){
-	E[0]=1/x[0] + 1/(x[0] - 100000);
-	E[1]=1/x[1] + 1/(x[1] - 100000);
+void electricField(float* E, float* x, Parameters* parameters){
+	E[0]=1/x[0] + 1/(x[0] - parameters->_Lx);
+	E[1]=1/x[1] + 1/(x[1] - parameters->_Ly);
 }
 
-void initial_condition(Particle * particles,int N){
+void initial_condition(Particle * particles, Parameters* parameters){
 	float pos[2];
-	for( int i = 0; i < N; i++){
-		pos[0]=2500+(float)(rand()%100000) / 20.0;
-		pos[1]=2500+(float)(rand()%100000) / 20.0;
+	for( int i = 0; i < parameters->_N; i++){
+		
+		particles[i].set_parameters 	(parameters		);
+		particles[i].set_mass  		(parameters->_mass	);
+		particles[i].set_charge		(parameters->_q		);
+		
+		pos[0]=(parameters->_Lx)/4.0 +(float)(rand()%(int)(parameters->_Lx)) / 2.0;
+		pos[1]=(parameters->_Ly)/4.0 +(float)(rand()%(int)(parameters->_Ly)) / 2.0;
 		particles[i].set_position(pos);
 	}
 }

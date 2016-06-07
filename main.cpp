@@ -6,7 +6,7 @@ int main (int argc,char ** argv){
 	Parameters * parameters = new Parameters (argc, argv);
 
 	Particle * particles = new Particle[parameters->_N];
-	initial_condition(particles,parameters->_N);
+	initial_condition(particles,parameters);
 
 	Output *output =new Output(parameters->_N,particles,parameters->_output_flag);
 

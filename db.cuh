@@ -1,11 +1,7 @@
 #ifndef DB_H
 #define DB_H
 
-#include <iostream>
-#include <fstream>
-#include <stdlib.h>
-#define NUMBER 100
-
+#include "parameters.cuh"
 
 class Particle{
 	private:

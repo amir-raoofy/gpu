@@ -21,8 +21,8 @@ parameters.o: parameters.cpp
 	$(CC) $(CFLAGS) $(FLAGS) parameters.cpp
 
 
-gpu: main_gpu.o db_gpu.o output_gpu.o
-	$(NVCC) $(FLAGS) main_gpu.o db_gpu.o output_gpu.o -o gpu
+gpu: main_gpu.o db_gpu.o output_gpu.o parameters_gpu.o
+	$(NVCC) $(FLAGS) main_gpu.o db_gpu.o output_gpu.o parameters_gpu.o -o gpu
 
 main_gpu.o: main.cu
 	$(NVCC) $(CFLAGS) $(FLAGS) main.cu -o main_gpu.o
@@ -32,6 +32,9 @@ db_gpu.o: db.cu
 
 output_gpu.o: output.cu
 	$(NVCC) $(CFLAGS) $(FLAGS) output.cu -o output_gpu.o 
+
+parameters_gpu.o: parameters.cu
+	$(NVCC) $(CFLAGS) $(FLAGS) parameters.cu -o parameters_gpu.o 
 
 clean: 
 	rm -f *o cpu gpu

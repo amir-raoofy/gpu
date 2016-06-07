@@ -9,10 +9,10 @@
 class Parameters{
 
 	public:
-	        const int _N		;	//number of particles
-	        float     _T		;	//duration of the simulation	
-        	float     _dt		;	//time steps
-	        int       _output_flag	;	//flag to enable writing an output file
+	        const int 	_N		;	//number of particles
+	        const float	_T		;	//duration of the simulation	
+        	const float	_dt		;	//time steps
+	        const int	_output_flag	;	//flag to enable writing an output file
 	
 		Parameters(int argc,char ** argv);
 

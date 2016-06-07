@@ -1,5 +1,5 @@
 #include "db.cuh"
-#include "output.h"
+#include "output.cuh"
 
 int main(){
 	
@@ -8,7 +8,7 @@ int main(){
 	const int N		= NUMBER;	//number of particles
 	const int T		= 10;		//duration of the simulation
 	const float dt 		= 0.1;		//time steps	
-	const int output_flag	= 1;		//
+	const int output_flag	= 0;		//
 
 	//calculate the size of the arrays to be allocated
 	int particles_array_bytes	= N * sizeof(Particle);
@@ -23,7 +23,6 @@ int main(){
 	//declare arrays which will be transfered to the Device
 	Particle * d_particles;
 	Particle * d_output;
-
 	
 	Output *output =new Output(N,h_particles);
 	
@@ -31,7 +30,6 @@ int main(){
 	cudaMalloc((void **) &d_particles,particles_array_bytes);
 	cudaMalloc((void **) &d_output,output_array_bytes);		
 
-			
 	//Transfer arrays to the Device
 	cudaMemcpy(d_particles,h_particles,particles_array_bytes,cudaMemcpyHostToDevice);
 

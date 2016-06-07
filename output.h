@@ -11,12 +11,13 @@ class Output{
 	private: 
 		int _N;
 		Particle *_particles;
+		int _flag;
 		int _timeStep;
 		char _folderName[26];
 		std::ofstream _file;
 
 	public:
-		Output (int N, Particle *particles);
+		Output (int N, Particle *particles, int flag);
 		void setTimeStep(int timeStep);
 		void openFile();
 		void writeHeader();

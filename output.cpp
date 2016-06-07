@@ -38,8 +38,8 @@ void Output::writeGrid(){
 	_file<<"DATASET UNSTRUCTURED_GRID\n";
 	_file<<"POINTS "<<_N<<" FLOAT\n";
 
-		for(int j = 0; j < _N; j++)
-			_file<< _particles[j].get_position()[0]<<" "<<_particles[j].get_position()[1]<<" "<<0<<"\n";
+	for(int j = 0; j < _N; j++)
+		_file<< _particles[j].get_position()[0]<<" "<<_particles[j].get_position()[1]<<" "<<0<<"\n";
 	_file<<"\n";
 	
 }
@@ -49,10 +49,8 @@ void Output::writeVelocity(){
 	_file<<"SCALARS HorizontalSpeed float\n";
 	_file<<"LOOKUP_TABLE default\n";
 
-	if(_timeStep%10 == 0){
-			for(int j = 0; j < _N; j++)
-				_file<<0<<"\n";
-		}
+	for(int j = 0; j < _N; j++)
+		_file<<0<<"\n";
 }
 
 void Output::closeFile(){

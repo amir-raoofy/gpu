@@ -1,13 +1,14 @@
 #include "output.cuh"
 
-Output::Output (int N, Particle *particles):_N(N), _particles(particles){
+Output::Output (int N, Particle *particles, int flag):_N(N), _particles(particles), _flag(flag){
 
 	struct tm* tm_info;
 	time_t now;
 	time(&now);
 	tm_info = localtime(&now);
 	strftime(_folderName, 26, "%Y:%m:%d %H:%M:%S", tm_info);
-	mkdir(_folderName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	if (_flag)
+		mkdir(_folderName, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	this->setTimeStep(0);
 
 }
@@ -48,10 +49,8 @@ void Output::writeVelocity(){
 	_file<<"SCALARS HorizontalSpeed float\n";
 	_file<<"LOOKUP_TABLE default\n";
 
-	if(_timeStep%10 == 0){
-			for(int j = 0; j < _N; j++)
-				_file<<0<<"\n";
-		}
+	for(int j = 0; j < _N; j++)
+		_file<<0<<"\n";
 }
 
 void Output::closeFile(){

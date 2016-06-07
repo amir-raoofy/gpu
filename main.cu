@@ -24,7 +24,7 @@ int main(){
 	Particle * d_particles;
 	Particle * d_output;
 	
-	Output *output =new Output(N,h_particles);
+	Output *output =new Output(N,h_particles,output_flag);
 	
 	//allocate memory space on the Device
 	cudaMalloc((void **) &d_particles,particles_array_bytes);

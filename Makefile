@@ -4,8 +4,8 @@ FLAGS =
 
 all: sim
 
-sim: main.o db.o output.o
-	$(CC) $(FLAGS) main.o db.o output.o -o sim
+sim: main.o db.o output.o parameters.o
+	$(CC) $(FLAGS) main.o db.o output.o parameters.o -o sim
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) $(FLAGS) main.cpp
@@ -15,5 +15,10 @@ db.o: db.cpp
 
 output.o: output.cpp
 	$(CC) $(CFLAGS) $(FLAGS) output.cpp
+
+parameters.o: parameters.cpp
+	$(CC) $(CFLAGS) $(FLAGS) parameters.cpp
+
+
 clean: 
 	rm *o sim

@@ -66,13 +66,13 @@ int main(){
 	//write the solution back to the Host
 	cudaMemcpy(h_particles,d_output,particles_array_bytes,cudaMemcpyDeviceToHost);
 
-	
+/*	
 	for(int i = 0 ; i < N ; i++){
 		std::cout<<h_particles[i].get_position()[0]<<","<<h_particles[i].get_position()[1]\
 		<<std::endl;
 	}
 	std::cout<<"size of:= "<<particles_array_bytes<<std::endl;
-
+*/
 	cudaFree(d_particles);
 	cudaFree(d_output);
 	

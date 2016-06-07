@@ -4,11 +4,11 @@
 int main (int argc,char ** argv){
 	
 	// set the simulation parameters
-	int N=10;		//number of particles 	
+	int N=500;		//number of particles 	
 
 	// set solver parameters
-	double dt=0.1;		// time step
-	double T =1000;		// time interval for the simulation
+	float dt=0.1;		// time step
+	float T =10000;		// time interval for the simulation
 
 	Particle * particles = new Particle[N];
 	initial_condition(particles, N);

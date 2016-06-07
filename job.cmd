@@ -15,7 +15,7 @@ source /etc/profile.d/modules.sh
 nvcc main.cu db.cu output.cu -o sim
 time ./sim
 
-# make clean
-# make all -j16
-# time ./sim
+make -s clean
+make -s all -j16
+time ./sim
 

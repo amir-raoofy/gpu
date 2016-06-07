@@ -1,6 +1,10 @@
+#ifndef DB_H
+#define DB_H
+
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
+#include <fstream>
 
 class Particle {
 	
@@ -34,3 +38,5 @@ class Particle {
 void update_position(double dt, double T, const int N, Particle * particles);
 void electricField(double* E, double* x);
 void initial_condition(Particle * particles,int N);
+
+#endif

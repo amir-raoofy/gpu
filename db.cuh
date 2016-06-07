@@ -1,7 +1,10 @@
+#ifndef DB_H
+#define DB_H
+
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-#define NUMBER 10
+#define NUMBER 100
 
 
 class Particle{
@@ -46,3 +49,6 @@ __global__ void update_position(float dt, float T, const int N,\
  Particle * d_particles, Particle * d_output, const int max_thread);
 __device__ void electricField(float* E, float* x);
 __host__ void initial_condition(Particle * particles,int N);
+
+#endif
+

@@ -135,17 +135,17 @@ __global__ void update_position(float dt, float T, const int N,\
 	particles[index].update_field(N, index, particles);
 	__syncthreads();
 	
-	__shared__ Particle sh_particles[NUMBER];
-	sh_particles[index] = particles[index];
-	__syncthreads();
+//	__shared__ Particle sh_particles[NUMBER];
+//	sh_particles[index] = particles[index];
+//	__syncthreads();
 
-	sh_particles[index].solve_time_step(dt);
+	particles[index].solve_time_step(dt);
 	__syncthreads();
 	
-	particles[index] = sh_particles[index];
-	__syncthreads();
+//	particles[index] = sh_particles[index];
+//	__syncthreads();
 	
-	d_output[index] = sh_particles[index];
+	d_output[index] = particles[index];
 	__syncthreads();
 	//__threadfence();
 		

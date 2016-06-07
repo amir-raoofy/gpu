@@ -1,11 +1,12 @@
 #include "db.cuh"
+#include "output.h"
 
 int main(){
 	
 	// set the simulation parameters
-	const int max_thread	= 1024;		//maximum number of threads per block
+	const int max_thread	= 512;		//maximum number of threads per block
 	const int N				= NUMBER;	//number of particles
-	const int T				= 1000000;		// duration of the simulation
+	const int T				= 1000;		// duration of the simulation
 	const float dt 			= 0.1;		//time steps	
 
 	
@@ -35,14 +36,22 @@ int main(){
 	cudaMemcpy(d_particles,h_particles,particles_array_bytes,cudaMemcpyHostToDevice);
 		
 	
-	std::ofstream myfile;
-	myfile.open("data");
-	myfile << "{";
+	//std::ofstream myfile;
+	//myfile.open("data");
+	//myfile << "{";
 	//int count = 0;
+
+	Output *output =new Output(N,h_particles);
+
 	for(int i = 0; i < int(T/dt); i++){
 		
 		// run the kernel with N threads and 1 Blocks
 		update_position<<<1,NUMBER>>>(dt,T,N,d_particles,d_output,max_thread);
+
+		cudaMemcpy(h_particles,d_output,particles_array_bytes,cudaMemcpyDeviceToHost);
+		output->setTimeStep(i);
+		output->writeFile();
+
 		//cudaDeviceSynchronize();
 	/*	if(i%10 == 0){
 			cudaMemcpy(h_particles,d_output,particles_array_bytes,cudaMemcpyDeviceToHost);
@@ -59,22 +68,22 @@ int main(){
 	}
 	
 	
-	myfile << "}";
-	myfile.close();
+	//myfile << "}";
+	//myfile.close();
 
 	
 	//write the solution back to the Host
 	cudaMemcpy(h_particles,d_output,particles_array_bytes,cudaMemcpyDeviceToHost);
 
 
-	
+/*	
 	for(int i = N-10 ; i < N ; i++){
 
 		std::cout<<h_particles[i].get_position()[0]<<","<<h_particles[i].get_position()[1]\
 		<<std::endl;
 	}
 	std::cout<<"size of:= "<<particles_array_bytes<<std::endl;
-
+*/
 	cudaFree(d_particles);
 	cudaFree(d_output);
 	

@@ -11,10 +11,9 @@
 # module load cuda/6.5
 source /etc/profile.d/modules.sh
 
-nvcc main.cu db.cu output.cu -o sim
-time ./sim
 
 make -s clean
 make -s all -j16
-time ./sim
+time ./gpu
+time ./cpu 100 1000 0.1 0
 

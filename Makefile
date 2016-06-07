@@ -1,11 +1,12 @@
-CC=g++
+CC  =g++
+NVCC=nvcc
 CFLAGS=-c
 FLAGS = 
 
-all: sim
+all: cpu gpu
 
-sim: main.o db.o output.o parameters.o
-	$(CC) $(FLAGS) main.o db.o output.o parameters.o -o sim
+cpu: main.o db.o output.o parameters.o
+	$(CC) $(FLAGS) main.o db.o output.o parameters.o -o cpu
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) $(FLAGS) main.cpp
@@ -20,5 +21,17 @@ parameters.o: parameters.cpp
 	$(CC) $(CFLAGS) $(FLAGS) parameters.cpp
 
 
+gpu: main_gpu.o db_gpu.o output_gpu.o
+	$(NVCC) $(FLAGS) main_gpu.o db_gpu.o output_gpu.o -o gpu
+
+main_gpu.o: main.cu
+	$(NVCC) $(CFLAGS) $(FLAGS) main.cu -o main_gpu.o
+
+db_gpu.o: db.cu
+	$(NVCC) $(CFLAGS) $(FLAGS) db.cu -o db_gpu.o
+
+output_gpu.o: output.cu
+	$(NVCC) $(CFLAGS) $(FLAGS) output.cu -o output_gpu.o 
+
 clean: 
-	rm *o sim
+	rm -f *o cpu gpu

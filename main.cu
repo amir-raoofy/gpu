@@ -6,7 +6,7 @@ int main(){
 	// set the simulation parameters
 	const int max_thread	= 512;		//maximum number of threads per block
 	const int N		= NUMBER;	//number of particles
-	const int T		= 10;		//duration of the simulation
+	const int T		= 1000;		//duration of the simulation
 	const float dt 		= 0.1;		//time steps	
 	const int output_flag	= 0;		//
 
@@ -37,7 +37,7 @@ int main(){
 		
 		// run the kernel with N threads and 1 Blocks
 		update_position<<<1,NUMBER>>>(dt,T,N,d_particles,d_output,max_thread);
-		cudaDeviceSynchronize();
+		//cudaDeviceSynchronize();
 		
 		if (output_flag){
 			if (!(i%10))

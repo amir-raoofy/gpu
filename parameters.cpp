@@ -5,10 +5,10 @@ Parameters::Parameters(int argc,char ** argv):
         _T           (atof(argv[2])),
         _dt          (atof(argv[3])),
 
-	_mass        (atoi(argv[4])),          
+	_mass        (atof(argv[4])),          
         _q           (atof(argv[5])),
         _Lx          (atof(argv[6])),
-        _Ly	     (atoi(argv[7])),
+        _Ly	     (atof(argv[7])),
         
 	_output_flag (atoi(argv[8]))
 

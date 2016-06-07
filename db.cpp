@@ -120,8 +120,8 @@ void update_position(float dt, float T, const int N,\
 
 
 void electricField(float* E, float* x, Parameters* parameters){
-	E[0]=1/x[0] + 1/(x[0] - parameters->_Lx);
-	E[1]=1/x[1] + 1/(x[1] - parameters->_Ly);
+	E[0]=1000/x[0] + 1000/(x[0] - parameters->_Lx);
+	E[1]=1000/x[1] + 1000/(x[1] - parameters->_Ly);
 }
 
 void initial_condition(Particle * particles, Parameters* parameters){

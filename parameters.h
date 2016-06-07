@@ -17,7 +17,7 @@ class Parameters{
 		const float 	_mass		;	// mass of the particles
 	        const float	_q		;	// charge of the particles	
         	const float	_Lx		;	// length of the cube in x direction
-	        const int	_Ly		;	// length of the cube in y direction
+	        const float	_Ly		;	// length of the cube in y direction
 	
 		Parameters(int argc,char ** argv);
 

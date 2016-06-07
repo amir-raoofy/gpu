@@ -6,7 +6,7 @@
 __host__ Particle::Particle(){
 	
 	this ->m    = 1  ;
-	this ->q    = 0.001;
+	this ->q    = 0.01;
 	this ->x[0] = 0.0;
 	this ->x[1] = 0.0;
 	this ->v[0] = 0.0;
@@ -45,6 +45,7 @@ __device__ __host__ void Particle::set_velocity(float* velocity){
 };
 __device__ void Particle::update_field(int N, int index, Particle * particles){
 	
+	__syncthreads();
 	this->set_interaction(N, index, particles);
 
 	this->set_field();
@@ -53,23 +54,27 @@ __device__ void Particle::update_field(int N, int index, Particle * particles){
 };
 
 //solve the newton equation by euler method
-__device__ __host__ void Particle::solve_time_step(float dt){
-
+__device__ void Particle::solve_time_step(float dt){
+	__syncthreads();
 	v[0] = v[0] + dt * q * (E[0]+I[0]) / m ;
+	__syncthreads();
 	x[0] = x[0] + dt * v [0];
+	__syncthreads();
 	
 	v[1] = v[1] + dt * q * (E[1]+I[1]) / m ;
+	__syncthreads();
 	x[1] = x[1] + dt * v [1];
+	__syncthreads();
 };
 
 //set the electronic field of each particle
-__device__ __host__ void Particle::set_field(){
+__device__ void Particle::set_field(){
 	electricField(this->E,this->x);
 };
 
 //calculate the interaction between the particle[index] and other particles
 __device__ void Particle::set_interaction(int N, int index, Particle * particles){
-	
+	__syncthreads();
 	float x_1 = this->x[0];
 	float y_1 = this->x[1];
 	float x_2 ;
@@ -80,30 +85,40 @@ __device__ void Particle::set_interaction(int N, int index, Particle * particles
 	
 	this->I[0]=0;
 	this->I[1]=0;
+	__syncthreads();
+	
 	for(int i = 0 ; i < index ; i++){
+		__syncthreads();
 		x_2 = particles[i].get_position()[0];
-
+		__syncthreads();
 		y_2 = particles[i].get_position()[1];
-
+		__syncthreads();
 		q_2 = particles[i].get_charge();
 
 		r_sqrt = sqrt(sqrt((x_1-x_2)*(x_1-x_2) + (y_1-y_2)*(y_1-y_2)));
 		r_3_2 = r_sqrt*r_sqrt*r_sqrt;
 		this->I[0] += q_2*(x_1-x_2)/r_3_2;
+		__syncthreads();
 
 		this->I[1] += q_2*(y_1-y_2)/r_3_2;
+		__syncthreads();
 
 	}
 	for(int i=index + 1;i < N ; i++){
+		__syncthreads();
 		x_2 = particles[i].get_position()[0];
-
+		__syncthreads();
 		y_2 = particles[i].get_position()[1];
-
+		__syncthreads();
 		q_2 = particles[i].get_charge();
+
 		r_sqrt = sqrt(sqrt((x_1-x_2)*(x_1-x_2) + (y_1-y_2)*(y_1-y_2)));
 		r_3_2 = r_sqrt*r_sqrt*r_sqrt;
 		this->I[0] += q_2*(x_1-x_2)/r_3_2;
+		__syncthreads();
+
 		this->I[1] += q_2*(y_1-y_2)/r_3_2;
+		__syncthreads();
 
 	}
 }
@@ -115,21 +130,22 @@ __global__ void update_position(float dt, float T, const int N,\
 	int index = threadIdx.x;
 	
 	//allocate shared memory and copy the particles into it
-	//__shared__ Particle sh_particles[NUMBER];
-	//sh_particles[index] = particles[index];
-	//__syncthreads();
 	
 	//update field and solve for a time step
 	particles[index].update_field(N, index, particles);
 	__syncthreads();
+	
+	__shared__ Particle sh_particles[NUMBER];
+	sh_particles[index] = particles[index];
+	__syncthreads();
 
-	particles[index].solve_time_step(dt);
+	sh_particles[index].solve_time_step(dt);
 	__syncthreads();
 	
-	//particles[index] = sh_particles[index];
-	//__syncthreads();
+	particles[index] = sh_particles[index];
+	__syncthreads();
 	
-	d_output[index] = particles[index];
+	d_output[index] = sh_particles[index];
 	__syncthreads();
 	//__threadfence();
 		
@@ -138,11 +154,16 @@ __global__ void update_position(float dt, float T, const int N,\
 };
 
 //the electrical field acts similar to a infinite wall
-__host__ __device__ void electricField(float* E, float* x){
+__device__ void electricField(float* E, float* x){
+	__syncthreads();
 	E[0]=1/x[0] + 1/(x[0] - 100000);
+	__syncthreads();
 	E[0]*=E[0];
+	__syncthreads();
 	E[1]=1/x[1] + 1/(x[1] - 100000);
+	__syncthreads();
 	E[1]*=E[1];
+	__syncthreads();
 }
 
 __host__ void initial_condition(Particle * particles,int N){

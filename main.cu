@@ -5,7 +5,7 @@ int main(){
 	// set the simulation parameters
 	const int max_thread	= 1024;		//maximum number of threads per block
 	const int N				= NUMBER;	//number of particles
-	const int T				= 1000;		// duration of the simulation
+	const int T				= 1000000;		// duration of the simulation
 	const float dt 			= 0.1;		//time steps	
 
 	
@@ -38,13 +38,13 @@ int main(){
 	std::ofstream myfile;
 	myfile.open("data");
 	myfile << "{";
-	int count = 0;
+	//int count = 0;
 	for(int i = 0; i < int(T/dt); i++){
 		
 		// run the kernel with N threads and 1 Blocks
 		update_position<<<1,NUMBER>>>(dt,T,N,d_particles,d_output,max_thread);
 		//cudaDeviceSynchronize();
-		if(i%10 == 0){
+	/*	if(i%10 == 0){
 			cudaMemcpy(h_particles,d_output,particles_array_bytes,cudaMemcpyDeviceToHost);
 			for(int j = 0; j < N ; j++ ){
 				if( i/10 != (int(T/dt)/10)-1 || j !=N-1){
@@ -55,7 +55,7 @@ int main(){
 				}
 			}
 		count++;
-		}
+		}*/
 	}
 	
 	
@@ -67,7 +67,7 @@ int main(){
 	cudaMemcpy(h_particles,d_output,particles_array_bytes,cudaMemcpyDeviceToHost);
 
 	
-	for(int i = 0 ; i < N ; i++){
+	for(int i = N-10 ; i < N ; i++){
 		std::cout<<h_particles[i].get_position()[0]<<","<<h_particles[i].get_position()[1]\
 		<<std::endl;
 	}

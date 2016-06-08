@@ -41,12 +41,22 @@ __device__ __host__ void Particle::set_velocity(float* velocity){
 	this->v[0]=velocity[0];
 	this->v[1]=velocity[1];
 };
+
+void Particle::set_parameters(Parameters* parameters){
+	this -> _parameters = parameters;
+};
+
+void Particle::set_mass(float mass){
+	this -> m = mass;
+};
+
+void Particle::set_charge(float charge){
+	this -> q = charge;
+};
+
 __device__ void Particle::update_field(int N, int index, Particle * particles){
-	
 	this->set_interaction(N, index, particles);
 	this->set_field();
-
-
 };
 
 //solve the newton equation by euler method
@@ -135,3 +145,24 @@ __host__ void initial_condition(Particle * particles,int N){
 		particles[i].set_position(pos);
 	}
 }
+
+/*
+__device__ void electricField(float* E, float* x, Parameters* parameters){
+	E[0]=1000/x[0] + 1000/(x[0] - parameters->_Lx);
+	E[1]=1000/x[1] + 1000/(x[1] - parameters->_Ly);
+}
+
+__host__ void initial_condition(Particle * particles, Parameters* parameters){
+	float pos[2];
+	for( int i = 0; i < parameters->_N; i++){
+		
+		particles[i].set_parameters 	(parameters		);
+		particles[i].set_mass  		(parameters->_mass	);
+		particles[i].set_charge		(parameters->_q		);
+		
+		pos[0]=(parameters->_Lx)/4.0 +(float)(rand()%(int)(parameters->_Lx)) / 2.0;
+		pos[1]=(parameters->_Ly)/4.0 +(float)(rand()%(int)(parameters->_Ly)) / 2.0;
+		particles[i].set_position(pos);
+	}
+}
+*/

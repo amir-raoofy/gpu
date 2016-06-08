@@ -13,7 +13,7 @@ int main (int argc,char ** argv){
 	//declare input and output array on the Host which are the same
 	Particle h_particles[parameters->_N];
 	//set particle position randomly 
-	initial_condition(h_particles,parameters->_N);
+	initial_condition(h_particles,parameters);
 	
 
 	//declare arrays which will be transfered to the Device

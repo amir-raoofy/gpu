@@ -45,11 +45,11 @@ class Particle{
 //this is the kernel of the simulation on the Device
 __global__ void update_position(float dt, float T, const int N,\
  Particle * d_particles, Particle * d_output, const int max_thread);
-__device__ void electricField(float* E, float* x);
-__host__ void initial_condition(Particle * particles,int N);
+//__device__ void electricField(float* E, float* x);
+//__host__ void initial_condition(Particle * particles,int N);
 
-//__device__ void electricField(float* E, float* x, Parameters* parameters);
-//__host__ void initial_condition(Particle * particles, Parameters* parameters);
+__device__ void electricField(float* E, float* x, Parameters* parameters);
+__host__ void initial_condition(Particle * particles, Parameters* parameters);
 
 
 #endif

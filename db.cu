@@ -70,7 +70,7 @@ __device__ void Particle::solve_time_step(float dt){
 
 //set the electronic field of each particle
 __device__ void Particle::set_field(){
-	electricField(this->E,this->x);
+	electricField(this->E,this->x,this->_parameters);
 };
 
 //calculate the interaction between the particle[index] and other particles
@@ -131,25 +131,9 @@ __global__ void update_position(float dt, float T, const int N,\
 	
 };
 
-//the electrical field acts similar to a infinite wall
-__device__ void electricField(float* E, float* x){
-	E[0]=1/x[0] + 1/(x[0] - 100000);
-	E[1]=1/x[1] + 1/(x[1] - 100000);
-}
-
-__host__ void initial_condition(Particle * particles,int N){
-	float pos[2];
-	for( int i = 0; i < N; i++){
-		pos[0]=2500+(float)(rand()%100000) / 20.0;
-		pos[1]=2500+(float)(rand()%100000) / 20.0;
-		particles[i].set_position(pos);
-	}
-}
-
-/*
 __device__ void electricField(float* E, float* x, Parameters* parameters){
-	E[0]=1000/x[0] + 1000/(x[0] - parameters->_Lx);
-	E[1]=1000/x[1] + 1000/(x[1] - parameters->_Ly);
+	E[0]=1/x[0] + 1/(x[0] - parameters->_Lx);
+	E[1]=1/x[1] + 1/(x[1] - parameters->_Ly);
 }
 
 __host__ void initial_condition(Particle * particles, Parameters* parameters){
@@ -165,4 +149,4 @@ __host__ void initial_condition(Particle * particles, Parameters* parameters){
 		particles[i].set_position(pos);
 	}
 }
-*/
+
